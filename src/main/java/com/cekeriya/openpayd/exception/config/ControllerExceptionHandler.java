@@ -1,8 +1,9 @@
-package com.cekeriya.openpayd.config;
+package com.cekeriya.openpayd.exception.config;
 
 import com.cekeriya.openpayd.exception.ConversionApiCallException;
 import com.cekeriya.openpayd.exception.NotFoundException;
 import com.cekeriya.openpayd.response.error.ErrorResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 import static com.cekeriya.openpayd.constant.ErrorType.INVALID_PARAMETER;
 import static com.cekeriya.openpayd.constant.ErrorType.MISSING_PARAMETER;
 
+@Slf4j
 @ControllerAdvice
 public class ControllerExceptionHandler {
 
@@ -57,7 +59,7 @@ public class ControllerExceptionHandler {
 
 		String errorMessage = String.format(MISSING_PARAMETER.getMessage(), ex.getParameter());
 
-		return new ResponseEntity<>(new ErrorResponse(status, MISSING_PARAMETER.getCode(), errorMessage ), status);
+		return new ResponseEntity<>(new ErrorResponse(status, MISSING_PARAMETER.getCode(), errorMessage), status);
 	}
 
 	@ExceptionHandler(MissingServletRequestParameterException.class)

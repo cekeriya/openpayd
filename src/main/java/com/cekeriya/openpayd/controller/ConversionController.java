@@ -20,6 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.Collections;
@@ -46,11 +47,11 @@ public class ConversionController {
 	@Operation(summary = "Get conversion details")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Successful Response", content = {
-					@Content(mediaType = "application/json", schema = @Schema(implementation = ConversionGetResponse.class)) }),
+					@Content(mediaType = "application/json", schema = @Schema(implementation = ConversionGetResponse.class))}),
 			@ApiResponse(responseCode = "400", description = "Bad Request - If given transaction id is not valid, returns INVALID_PARAMETER(10001) code", content = {
-					@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) }),
+					@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
 			@ApiResponse(responseCode = "404", description = "Not Found - If any conversion can not be found according to transaction id, returns CONVERSION_NOT_FOUND(10002) code", content = {
-					@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) }) })
+					@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})})
 	@GetMapping("/{transactionId}")
 	public ResponseEntity<ConversionGetResponse> getConversion(@PathVariable(name = "transactionId") UUID transactionId) {
 		return new ResponseEntity(mapper.toConversionResponse(conversionService.findByTransactionId(transactionId)), HttpStatus.OK);
@@ -62,14 +63,14 @@ public class ConversionController {
 					@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ConversionsGetResponse.class)))}),
 			@ApiResponse(responseCode = "400", description = "Bad Request - If any of given transaction id, transaction date, page or size parameters are not valid, " +
 																	 "returns INVALID_PARAMETER(10001) code", content = {
-					@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) }),
+					@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
 			@ApiResponse(responseCode = "404", description = "Not Found - If any conversion can not be found according to transaction id, returns CONVERSION_NOT_FOUND(10002) code", content = {
-					@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) }) })
+					@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})})
 	@GetMapping
 	public ResponseEntity<?> getConversions(@RequestParam(name = "transactionId", required = false) UUID transactionId,
-																	  @RequestParam(name = "conversionDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date transactionDate,
-																	  @RequestParam(value = "page", defaultValue = "0") @PositiveOrZero int page,
-																	  @RequestParam(value = "size", defaultValue = "25") @Positive int size) {
+											@RequestParam(name = "conversionDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @PastOrPresent Date transactionDate,
+											@RequestParam(value = "page", defaultValue = "0") @PositiveOrZero int page,
+											@RequestParam(value = "size", defaultValue = "25") @Positive int size) {
 		// PS: searching with transactionId logic should extract from this api. This api should support only for transactionDate with pagination
 		if (Objects.isNull(transactionId) && Objects.isNull(transactionDate)) {
 			return new ResponseEntity(new ErrorResponse(HttpStatus.BAD_REQUEST,
@@ -90,9 +91,9 @@ public class ConversionController {
 					@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ConversionPerformResponse.class)))}),
 			@ApiResponse(responseCode = "400", description = "Bad Request - If any of given source and target currencies or exchange amount are not valid, " +
 																	 "returns INVALID_PARAMETER(10001) code", content = {
-					@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) }),
+					@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
 			@ApiResponse(responseCode = "500", description = "Interval Server Error - If any problem occurred during service provider access, returns CONVERSION_API_CALL_ERROR(10003) code", content = {
-					@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) }) })
+					@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})})
 	@PostMapping()
 	public ResponseEntity<ConversionPerformResponse> performConversions(@RequestBody @Valid ConversionPerformRequest conversionPerformRequest) {
 		return new ResponseEntity<>(mapper.toConversionPerformResponse(conversionService.performConversion(conversionPerformRequest)), HttpStatus.OK);
