@@ -1,14 +1,15 @@
 package com.cekeriya.openpayd.service;
 
+import com.cekeriya.openpayd.service.provider.ExchangeServiceProvider;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
 @Service
 public class ExchangeRateService {
-	private final FixerService fixerService;
+	private final ExchangeServiceProvider fixerService;
 
-	public ExchangeRateService(FixerService fixerService) {
+	public ExchangeRateService(ExchangeServiceProvider fixerService) {
 		this.fixerService = fixerService;
 	}
 

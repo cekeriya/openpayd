@@ -1,8 +1,8 @@
-package com.cekeriya.openpayd.service;
+package com.cekeriya.openpayd.service.provider;
 
 import com.cekeriya.openpayd.exception.ConversionApiCallException;
-import com.cekeriya.openpayd.response.fixer.FixerConvertResponse;
-import com.cekeriya.openpayd.response.fixer.FixerRateResponse;
+import com.cekeriya.openpayd.response.exchange.ConvertResponse;
+import com.cekeriya.openpayd.response.exchange.RateResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
@@ -20,7 +20,7 @@ import static com.cekeriya.openpayd.constant.ErrorType.CONVERSION_API_CALL_ERROR
 
 @Slf4j
 @Service
-public class FixerService {
+public class FixerExchangeService implements ExchangeServiceProvider {
 	private static final String API_KEY = "apiKey";
 
 	@Value("${fixer.service.provider.convert.url}")
@@ -38,19 +38,21 @@ public class FixerService {
 
 
 	@Autowired
-	public FixerService(ObjectMapper objectMapper) {
+	public FixerExchangeService(ObjectMapper objectMapper) {
 		this.client = new OkHttpClient().newBuilder().build();
 		this.objectMapper = objectMapper;
 	}
 
 	/**
-	 * Sends a request to fixer service provider and gets rates for specified currencies
+	 * Sends a request to fixer service provider and gets perform convert
 	 *
 	 * @param sourceCurrency source currency
 	 * @param targetCurrency target currency
-	 * @return currency rates
+	 * @param amount amount
+	 * @return convert result
 	 */
-	public FixerConvertResponse convert(String sourceCurrency, String targetCurrency, BigDecimal amount) {
+	@Override
+	public ConvertResponse convert(String sourceCurrency, String targetCurrency, BigDecimal amount) {
 		// generate convert url with parameters
 		String url = String.format(fixerServiceConvertUrl, sourceCurrency, targetCurrency, amount);
 
@@ -71,7 +73,7 @@ public class FixerService {
 
 		if (response.isSuccessful()) {
 			try {
-				return objectMapper.readValue(Objects.requireNonNull(response.body()).string(), FixerConvertResponse.class);
+				return objectMapper.readValue(Objects.requireNonNull(response.body()).string(), ConvertResponse.class);
 			} catch (IOException e) {
 				log.error("[FIXER_SERVICE] [CONVERT] [MAPPER_EXCEPTION] [MESSAGE={}]", e.getMessage());
 				throw new ConversionApiCallException(CONVERSION_API_CALL_ERROR);
@@ -82,7 +84,15 @@ public class FixerService {
 		}
 	}
 
-	public FixerRateResponse rate(String sourceCurrency, String targetCurrency) {
+	/**
+	 * Sends a request to fixer service provider and gets rates for specified currencies
+	 *
+	 * @param sourceCurrency source currency
+	 * @param targetCurrency target currency
+	 * @return currency rates
+	 */
+	@Override
+	public RateResponse rate(String sourceCurrency, String targetCurrency) {
 		// generate rate url with parameters
 		String url = String.format(fixerServiceRateUrl, sourceCurrency, targetCurrency);
 
@@ -103,7 +113,7 @@ public class FixerService {
 
 		if (response.isSuccessful()) {
 			try {
-				return objectMapper.readValue(Objects.requireNonNull(response.body()).string(), FixerRateResponse.class);
+				return objectMapper.readValue(Objects.requireNonNull(response.body()).string(), RateResponse.class);
 			} catch (IOException e) {
 				log.error("[FIXER_SERVICE] [RATE] [MAPPER_EXCEPTION] [MESSAGE={}]", e.getMessage());
 				throw new ConversionApiCallException(CONVERSION_API_CALL_ERROR);

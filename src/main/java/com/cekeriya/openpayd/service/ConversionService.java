@@ -5,7 +5,8 @@ import com.cekeriya.openpayd.exception.NotFoundException;
 import com.cekeriya.openpayd.model.Conversion;
 import com.cekeriya.openpayd.repository.ConversionRepository;
 import com.cekeriya.openpayd.request.ConversionPerformRequest;
-import com.cekeriya.openpayd.response.fixer.FixerConvertResponse;
+import com.cekeriya.openpayd.response.exchange.ConvertResponse;
+import com.cekeriya.openpayd.service.provider.ExchangeServiceProvider;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -22,9 +23,9 @@ import static com.cekeriya.openpayd.constant.ErrorType.CONVERSION_NOT_FOUND;
 public class ConversionService {
 	private final ConversionRepository conversionRepository;
 
-	private final FixerService fixerService;
+	private final ExchangeServiceProvider fixerService;
 
-	public ConversionService(ConversionRepository conversionRepository, FixerService fixerService) {
+	public ConversionService(ConversionRepository conversionRepository, ExchangeServiceProvider fixerService) {
 		this.conversionRepository = conversionRepository;
 		this.fixerService = fixerService;
 	}
@@ -54,17 +55,17 @@ public class ConversionService {
 		String targetCurrency = conversionPerformRequest.getTargetCurrency();
 
 		// get currency rate
-		FixerConvertResponse fixerConvertResponse = fixerService.convert(sourceCurrency, targetCurrency, conversionPerformRequest.getSourceAmount());
+		ConvertResponse convertResponse = fixerService.convert(sourceCurrency, targetCurrency, conversionPerformRequest.getSourceAmount());
 
-		if (!fixerConvertResponse.isSuccess()) {
+		if (!convertResponse.isSuccess()) {
 			throw new ConversionApiCallException(CONVERSION_API_CALL_ERROR);
 		}
 
 		// generate conversion
-		Conversion conversion = Conversion.builder().amount(fixerConvertResponse.getResult())
+		Conversion conversion = Conversion.builder().amount(convertResponse.getResult())
 				.sourceCurrency(sourceCurrency)
 				.targetCurrency(targetCurrency)
-				.conversionDate(fixerConvertResponse.getDate())
+				.conversionDate(convertResponse.getDate())
 				.build();
 
 		// save conversion

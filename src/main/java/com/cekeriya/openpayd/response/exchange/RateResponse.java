@@ -1,4 +1,4 @@
-package com.cekeriya.openpayd.response.fixer;
+package com.cekeriya.openpayd.response.exchange;
 
 import lombok.*;
 
@@ -11,7 +11,7 @@ import java.util.Map;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FixerRateResponse {
+public class RateResponse {
 	private boolean success;
 	private Long timestamp;
 	private String base;

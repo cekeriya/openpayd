@@ -1,4 +1,4 @@
-package com.cekeriya.openpayd.response.fixer;
+package com.cekeriya.openpayd.response.exchange;
 
 import lombok.*;
 
@@ -10,10 +10,10 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FixerConvertResponse {
+public class ConvertResponse {
 	private boolean success;
-	private FixerQuery query;
-	private FixerInfo info;
+	private Query query;
+	private Info info;
 	private boolean historical;
 	private Date date;
 	private BigDecimal result;

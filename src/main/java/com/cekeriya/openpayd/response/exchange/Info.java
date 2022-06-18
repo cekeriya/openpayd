@@ -1,4 +1,4 @@
-package com.cekeriya.openpayd.response.fixer;
+package com.cekeriya.openpayd.response.exchange;
 
 import lombok.*;
 
@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FixerInfo {
+public class Info {
 	private Long timestamp;
 	private BigDecimal rate;
 }
