@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import static com.cekeriya.openpayd.constant.ErrorType.CONVERSION_API_CALL_ERROR;
 
@@ -31,15 +32,15 @@ public class FixerService {
 	@Value("${fixer.service.provider.access.key}")
 	private String fixerServiceAccessKey;
 
+	private final ObjectMapper objectMapper;
+
+	private final OkHttpClient client;
+
+
 	@Autowired
-	private ObjectMapper objectMapper;
-
-	private OkHttpClient client;
-
-
-	@Autowired
-	public FixerService() {
+	public FixerService(ObjectMapper objectMapper) {
 		this.client = new OkHttpClient().newBuilder().build();
+		this.objectMapper = objectMapper;
 	}
 
 	/**
@@ -70,7 +71,7 @@ public class FixerService {
 
 		if (response.isSuccessful()) {
 			try {
-				return objectMapper.readValue(response.body().string(), FixerConvertResponse.class);
+				return objectMapper.readValue(Objects.requireNonNull(response.body()).string(), FixerConvertResponse.class);
 			} catch (IOException e) {
 				log.error("[FIXER_SERVICE] [CONVERT] [MAPPER_EXCEPTION] [MESSAGE={}]", e.getMessage());
 				throw new ConversionApiCallException(CONVERSION_API_CALL_ERROR);
@@ -102,7 +103,7 @@ public class FixerService {
 
 		if (response.isSuccessful()) {
 			try {
-				return objectMapper.readValue(response.body().string(), FixerRateResponse.class);
+				return objectMapper.readValue(Objects.requireNonNull(response.body()).string(), FixerRateResponse.class);
 			} catch (IOException e) {
 				log.error("[FIXER_SERVICE] [RATE] [MAPPER_EXCEPTION] [MESSAGE={}]", e.getMessage());
 				throw new ConversionApiCallException(CONVERSION_API_CALL_ERROR);

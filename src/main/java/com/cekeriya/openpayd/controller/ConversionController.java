@@ -4,7 +4,6 @@ import com.cekeriya.openpayd.mapper.ConversionMapper;
 import com.cekeriya.openpayd.request.ConversionPerformRequest;
 import com.cekeriya.openpayd.response.error.ErrorResponse;
 import com.cekeriya.openpayd.service.ConversionService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 import static com.cekeriya.openpayd.constant.ErrorType.MISSING_PARAMETER;
 
@@ -26,11 +22,14 @@ import static com.cekeriya.openpayd.constant.ErrorType.MISSING_PARAMETER;
 @RequestMapping("/conversions")
 public class ConversionController {
 
-	@Autowired
-	private ConversionService conversionService;
+	private final ConversionService conversionService;
 
-	@Autowired
-	private ConversionMapper mapper;
+	private final ConversionMapper mapper;
+
+	public ConversionController(ConversionService conversionService, ConversionMapper mapper) {
+		this.conversionService = conversionService;
+		this.mapper = mapper;
+	}
 
 	@GetMapping("/{transactionId}")
 	public ResponseEntity<?> getConversion(@PathVariable(name = "transactionId") UUID transactionId) {
@@ -49,7 +48,7 @@ public class ConversionController {
 		}
 
 		if (Objects.nonNull(transactionId)) {
-			return new ResponseEntity(Arrays.asList(mapper.toConversionResponse(conversionService.findByTransactionId(transactionId))), HttpStatus.OK);
+			return new ResponseEntity(Collections.singletonList(mapper.toConversionResponse(conversionService.findByTransactionId(transactionId))), HttpStatus.OK);
 
 		} else {
 			return new ResponseEntity<>(mapper.toConversionResponse(conversionService.findByConversionDate(transactionDate, page, size)), HttpStatus.OK);

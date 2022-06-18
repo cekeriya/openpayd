@@ -6,7 +6,6 @@ import com.cekeriya.openpayd.model.Conversion;
 import com.cekeriya.openpayd.repository.ConversionRepository;
 import com.cekeriya.openpayd.request.ConversionPerformRequest;
 import com.cekeriya.openpayd.response.fixer.FixerConvertResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -23,11 +22,11 @@ import static com.cekeriya.openpayd.constant.ErrorType.CONVERSION_NOT_FOUND;
 public class ConversionService {
 	private final ConversionRepository conversionRepository;
 
-	@Autowired
-	private FixerService fixerService;
+	private final FixerService fixerService;
 
-	public ConversionService(ConversionRepository conversionRepository) {
+	public ConversionService(ConversionRepository conversionRepository, FixerService fixerService) {
 		this.conversionRepository = conversionRepository;
+		this.fixerService = fixerService;
 	}
 
 	public List<Conversion> findByConversionDate(Date conversionDate, int page, int size) {

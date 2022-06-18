@@ -3,7 +3,6 @@ package com.cekeriya.openpayd.controller;
 import com.cekeriya.openpayd.response.rate.ExchangeRateGetResponse;
 import com.cekeriya.openpayd.service.ExchangeRateService;
 import com.cekeriya.openpayd.validator.CurrencyCode;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -19,9 +18,11 @@ import javax.validation.constraints.NotBlank;
 @RequestMapping("/exchange-rate")
 public class ExchangeRateController {
 
-	@Autowired
-	private ExchangeRateService exchangeRateService;
+	private final ExchangeRateService exchangeRateService;
 
+	public ExchangeRateController(ExchangeRateService exchangeRateService) {
+		this.exchangeRateService = exchangeRateService;
+	}
 
 	@GetMapping()
 	public ResponseEntity<?> getExchangeRate(@RequestParam @NotBlank @CurrencyCode String sourceCurrency, @RequestParam @NotBlank @CurrencyCode String targetCurrency) {
