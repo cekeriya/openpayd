@@ -1,8 +1,8 @@
 package com.cekeriya.openpayd.config;
 
 import com.cekeriya.openpayd.exception.ConversionApiCallException;
-import com.cekeriya.openpayd.response.error.ErrorResponse;
 import com.cekeriya.openpayd.exception.NotFoundException;
+import com.cekeriya.openpayd.response.error.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -10,6 +10,7 @@ import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.validation.ConstraintViolationException;
@@ -24,6 +25,7 @@ import static com.cekeriya.openpayd.constant.ErrorType.MISSING_PARAMETER;
 public class ControllerExceptionHandler {
 
 	@ExceptionHandler(ConstraintViolationException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException ex) {
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 
@@ -36,6 +38,7 @@ public class ControllerExceptionHandler {
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 
@@ -48,6 +51,7 @@ public class ControllerExceptionHandler {
 	}
 
 	@ExceptionHandler(MissingPathVariableException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ResponseEntity<ErrorResponse> handleMissingPathVariableException(MissingPathVariableException ex) {
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 
@@ -57,6 +61,7 @@ public class ControllerExceptionHandler {
 	}
 
 	@ExceptionHandler(MissingServletRequestParameterException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ResponseEntity<ErrorResponse> handleMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 
@@ -66,6 +71,7 @@ public class ControllerExceptionHandler {
 	}
 
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 
@@ -75,6 +81,7 @@ public class ControllerExceptionHandler {
 	}
 
 	@ExceptionHandler(NotFoundException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException ex) {
 		HttpStatus status = HttpStatus.NOT_FOUND;
 
@@ -82,6 +89,7 @@ public class ControllerExceptionHandler {
 	}
 
 	@ExceptionHandler(ConversionApiCallException.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public ResponseEntity<ErrorResponse> handleConversionApiCallException(ConversionApiCallException ex) {
 		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
