@@ -33,7 +33,7 @@ public class ConversionService {
 	public List<Conversion> findByConversionDate(Date conversionDate, int page, int size) {
 		PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "createdDate"));
 
-		return conversionRepository.findByCreatedDateGreaterThan(conversionDate, pageRequest);
+		return conversionRepository.findByConversionDateLessThan(conversionDate, pageRequest);
 	}
 
 	public Conversion findByTransactionId(UUID transactionId) {

@@ -14,6 +14,6 @@ import java.util.UUID;
 public interface ConversionRepository extends JpaRepository<Conversion, UUID> {
 	Optional<Conversion> findByTransactionId(UUID transactionId);
 
-	List<Conversion> findByCreatedDateGreaterThan(Date conversionDate, Pageable pageable);
+	List<Conversion> findByConversionDateLessThan(Date conversionDate, Pageable pageable);
 
 }

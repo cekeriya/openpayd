@@ -96,7 +96,7 @@ public class ConversionServiceTest {
 		List<Conversion> conversionList = Arrays.asList(conversion);
 
 		// mock
-		Mockito.when(mockConversionRepository.findByCreatedDateGreaterThan(any(Date.class), any(Pageable.class))).thenReturn(conversionList);
+		Mockito.when(mockConversionRepository.findByConversionDateLessThan(any(Date.class), any(Pageable.class))).thenReturn(conversionList);
 
 		// operation
 		List<Conversion> resultConversionList = conversionService.findByConversionDate(new Date(), 1, 2);
@@ -108,7 +108,7 @@ public class ConversionServiceTest {
 	@Test
 	void findByConversionDate_emptyResult() {
 		// mock
-		Mockito.when(mockConversionRepository.findByCreatedDateGreaterThan(any(Date.class), any(Pageable.class))).thenReturn(Collections.EMPTY_LIST);
+		Mockito.when(mockConversionRepository.findByConversionDateLessThan(any(Date.class), any(Pageable.class))).thenReturn(Collections.EMPTY_LIST);
 
 		// operation
 		List<Conversion> resultConversionList = conversionService.findByConversionDate(new Date(), 1, 2);

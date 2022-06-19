@@ -68,7 +68,7 @@ public class ConversionController {
 					@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})})
 	@GetMapping
 	public ResponseEntity<?> getConversions(@RequestParam(name = "transactionId", required = false) UUID transactionId,
-											@RequestParam(name = "conversionDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @PastOrPresent Date transactionDate,
+											@RequestParam(name = "transactionDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @PastOrPresent Date transactionDate,
 											@RequestParam(value = "page", defaultValue = "0") @PositiveOrZero int page,
 											@RequestParam(value = "size", defaultValue = "25") @Positive int size) {
 		// PS: searching with transactionId logic should extract from this api. This api should support only for transactionDate with pagination
