@@ -235,7 +235,6 @@ public class ConversionControllerTest {
 				.lastModifiedDate(new Date())
 				.transactionId(UUID.randomUUID())
 				.build();
-
 	}
 
 	private ConversionPerformRequest createConversionPerformRequest(Conversion conversion) {
